@@ -1,0 +1,27 @@
+---
+export async function getStaticPaths() {
+  const listReq = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
+  const list = (await listReq.json()).results 
+  return list.map(entry => {
+    return { params: {pkmn: entry.name} }
+  })
+}
+
+import PkmnData from '../components/PkmnData.astro'
+import PkmnList from '../components/PkmnList.astro'
+import { fetchJson } from '../utils.ts'
+
+const { pkmn } = Astro.params;
+const data = await fetchJson('https://pokeapi.co/api/v2/pokemon/' + pkmn)
+---
+<div>
+  <div class="page">
+    <PkmnList class="col1"/>
+    <PkmnData class="col2" data={data}/>
+  </div>
+  <style>
+    .page {
+      display: flex;
+    }
+  </style>
+</div>

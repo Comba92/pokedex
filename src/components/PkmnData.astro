@@ -1,0 +1,12 @@
+---
+import { capitalize } from "../utils"
+
+const { data } = Astro.props
+---
+<div id="pkmnData">
+  <h1>{ capitalize(data.name) }</h1>
+  <img src={data.sprites.front_default}/>
+  <h2>National ID: #{String(data.id).padStart(3, '0')}</h2>
+  <p></p>
+  <p>Height: {data.height}, Weight: {data.weight}</p>
+</div>

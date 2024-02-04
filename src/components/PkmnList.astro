@@ -1,0 +1,13 @@
+---
+import { fetchJson } from '../utils.ts' 
+import PkmnListEntry from './PkmnListEntry.astro'
+
+const list = (await fetchJson('https://pokeapi.co/api/v2/pokemon?limit=151')).results
+---
+<div id="pkmnList">
+  {
+    list.map((pkmn, id) => 
+      <PkmnListEntry id={id} pkmn={pkmn} />
+    )
+  }
+</div>
