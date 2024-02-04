@@ -3,6 +3,10 @@ import { iconBaseUrl, capitalize } from '../utils.ts'
 const { id, pkmn } = Astro.props
 ---
 <div class="pkmnEntry" id={pkmn.name}>
-  {id+1} <a href={`/${pkmn.name}`}>{ capitalize(pkmn.name) }</a>
-  <img src={ iconBaseUrl + String(id + 1) + '.png' } />
+  <a href={`/${pkmn.name}`}>
+    <button>
+      {id+1} { capitalize(pkmn.name) }
+      <img src={ iconBaseUrl + String(id + 1) + '.png' } />
+    </button>
+  </a>
 </div>

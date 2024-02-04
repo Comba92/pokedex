@@ -14,14 +14,26 @@ import { fetchJson } from '../utils.ts'
 const { pkmn } = Astro.params;
 const data = await fetchJson('https://pokeapi.co/api/v2/pokemon/' + pkmn)
 ---
-<div>
-  <div class="page">
-    <PkmnList class="col1"/>
-    <PkmnData class="col2" data={data}/>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Pokedex WIP</title>
+	</head>
+  <body>
+  <div>
+    <div class="page">
+      <PkmnList class="col1"/>
+      <PkmnData class="col2" data={data}/>
+    </div>
+    <style>
+      .page {
+        display: flex;
+      }
+
+    </style>
   </div>
-  <style>
-    .page {
-      display: flex;
-    }
-  </style>
-</div>
+  </body>
+</html>
