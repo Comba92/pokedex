@@ -1,45 +1,87 @@
 ---
-import { capitalize, fetchJson } from "../utils"
+import { artworkBaseUrl, capitalize, fetchJson } from "../utils"
 
 const { data } = Astro.props
-const imageUrl = data.sprites.other['official-artwork'].front_default
+
+const artworkUrl = data.sprites.other['official-artwork'].front_default
 
 const types = await Promise.all(
   data.types.map(async (t) => await fetchJson(t.type.url))
 )
+const abilities = await Promise.all(
+  data.abilities.map(async (a) => await fetchJson(a.ability.url))
+)
 
 const species = await fetchJson(data.species.url)
+const classification = species.genera.filter(g => g.language.name === 'en')[0].genus.split(' ')[0]
 const genderRateFemale = species.gender_rate * 100 / 8
 const genderRateMale = 100 - genderRateFemale
 
 const evolutions = await fetchJson(species.evolution_chain.url)
 
+const pkmn = {
+  name: capitalize(data.name),
+  id: data.id,
+  artworkUrl,
+  sprites: data.sprites.versions,
+  classification, 
+  height: data.height,
+  weight: data.weight,
+  catchRate: species.capture_rate,
+  genderRateMale,
+  genderRateFemale,
+  expGrowthRate: species.growth_rate.name,
+  baseExp: data.base_experience,
+  baseHappiness: species.base_happiness,
+  stats: data.stats.map(s => {
+    return {name: capitalize(s.stat.name), value: s.base_stat}
+  }),
+  names: species.names.map(n => {
+    return {name: capitalize(n.name), language: n.language.name}
+  }),
+  genera: species.genera.map(g => {
+    return {name: capitalize(g.genus), language: g.language.name}
+  }),
+  flavorTexts: species.flavor_text_entries
+    .filter(t => t.language.name === 'en')
+    .map(t => {
+      return {text: t.flavor_text, version: t.version.name}
+    }),
+  types,
+  evolutions,
+  abilities,
+}
 ---
 <div id="pkmnData">
   <div>
-    <h1>{ capitalize(data.name) }</h1>
-    <img src={imageUrl}/>
-    <h3>National ID: #{String(data.id).padStart(3, '0')}</h3>
-    <div>Type: <b>{types.map(type => capitalize(type.name)).join(', ')}</b></div>
-    <p>{capitalize(species.genera.filter(g => g.language.name === 'en')[0].genus.split(' ')[0])} Pokemon</p>
-    <p>Height: {data.height}, Weight: {data.weight}</p>
-    <p>Introduced in {species.generation.name}</p>
+    <h1>{pkmn.name}</h1>
+    <img src={pkmn.artworkUrl}/>
+    <h3>National ID: #{String(pkmn.id).padStart(3, '0')}</h3>
+    <div>Type: <b>{pkmn.types.map(type => capitalize(type.name)).join(', ')}</b></div>
+    <p>{pkmn.classification} Pokemon</p>
+    <p>Height: {pkmn.height} m, Weight: {pkmn.weight} kg</p>
   </div>
   
   <div>
-    <h2>Stats for nerds</h2>
-    <p>Geneder Ratio: {genderRateMale}% male, {genderRateFemale}% female</p>
-    <p>Catch rate: {species.capture_rate}</p>
-    <p>Base happiness: {species.base_happiness}</p>
-    <p>Growth rate: {species.growth_rate.name}</p>
+    <h1>Stats for nerds</h1>
+    <p>Geneder Ratio: {pkmn.genderRateMale}% male, {pkmn.genderRateFemale}% female</p>
+    <p>Catch rate: {pkmn.catchRate}</p>
+    <p>Base experience: {pkmn.baseExp}</p>
+    <p>Base happiness: {pkmn.baseHappiness}</p>
+    <p>Growth rate: {pkmn.expGrowthRate}</p>
+  </div>
+  
+  <div>
+    <h1>Base stats</h1>
+      {pkmn.stats.map(s => <p>{(s.name)} <progress value={s.value} max="256"></progress> : {s.value}</p>)}
+  </div>
+  
+  <div>
+    <h1>Evolutions</h1>
   </div>
 
-  <div>
-    <h2>Evolutions</h2>
-  </div>
 
   <div>
-    <h2>Base stats</h2>
-      {data.stats.map(s => <p>{capitalize(s.stat.name)} <progress value={s.base_stat} max="256"></progress> : {s.base_stat}</p>)}
+    <h1>Abilities</h1>
   </div>
 </div>

@@ -22,7 +22,6 @@
 - Weaknesses -> need of a method to compute them
 - Classification
 - Height, weight
-- Habitat
 
 ## Training
 - gender rate 
@@ -41,11 +40,10 @@
 ### Moves
 ### Eggs / Breeding stuff
 
-
 ### Avaibility -> trainers which possess it
 ### Level cap per game
 
-### Pokedex Entries (Flavortext, shape, varities, habitat)
+### Pokedex Entries (Flavortext, shape, color, varities, habitat)
 ### Sprites
 
 ### Name etymology, names in other languages, trivia
