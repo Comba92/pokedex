@@ -19,9 +19,10 @@
 - Quick links
 - Picture (concept art)
 - Types
-- Weaknesses (?)
+- Weaknesses -> need of a method to compute them
 - Classification
 - Height, weight
+- Habitat
 
 ## Training
 - gender rate 
@@ -44,7 +45,7 @@
 ### Avaibility -> trainers which possess it
 ### Level cap per game
 
-### Pokedex Entries (Flavortext)
+### Pokedex Entries (Flavortext, shape, varities, habitat)
 ### Sprites
 
 ### Name etymology, names in other languages, trivia

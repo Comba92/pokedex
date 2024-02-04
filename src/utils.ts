@@ -4,7 +4,8 @@ export async function fetchJson(url: string) {
 }
 
 export function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
+  if (str.includes('-')) return str.split('-').map(s => capitalize(s)).join(' ')
+  else return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export const iconBaseUrl = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/'

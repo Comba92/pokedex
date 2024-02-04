@@ -1,12 +1,45 @@
 ---
-import { capitalize } from "../utils"
+import { capitalize, fetchJson } from "../utils"
 
 const { data } = Astro.props
+const imageUrl = data.sprites.other['official-artwork'].front_default
+
+const types = await Promise.all(
+  data.types.map(async (t) => await fetchJson(t.type.url))
+)
+
+const species = await fetchJson(data.species.url)
+const genderRateFemale = species.gender_rate * 100 / 8
+const genderRateMale = 100 - genderRateFemale
+
+const evolutions = await fetchJson(species.evolution_chain.url)
+
 ---
 <div id="pkmnData">
-  <h1>{ capitalize(data.name) }</h1>
-  <img src={data.sprites.front_default}/>
-  <h2>National ID: #{String(data.id).padStart(3, '0')}</h2>
-  <p></p>
-  <p>Height: {data.height}, Weight: {data.weight}</p>
+  <div>
+    <h1>{ capitalize(data.name) }</h1>
+    <img src={imageUrl}/>
+    <h3>National ID: #{String(data.id).padStart(3, '0')}</h3>
+    <div>Type: <b>{types.map(type => capitalize(type.name)).join(', ')}</b></div>
+    <p>{capitalize(species.genera.filter(g => g.language.name === 'en')[0].genus.split(' ')[0])} Pokemon</p>
+    <p>Height: {data.height}, Weight: {data.weight}</p>
+    <p>Introduced in {species.generation.name}</p>
+  </div>
+  
+  <div>
+    <h2>Stats for nerds</h2>
+    <p>Geneder Ratio: {genderRateMale}% male, {genderRateFemale}% female</p>
+    <p>Catch rate: {species.capture_rate}</p>
+    <p>Base happiness: {species.base_happiness}</p>
+    <p>Growth rate: {species.growth_rate.name}</p>
+  </div>
+
+  <div>
+    <h2>Evolutions</h2>
+  </div>
+
+  <div>
+    <h2>Base stats</h2>
+      {data.stats.map(s => <p>{capitalize(s.stat.name)} <progress value={s.base_stat} max="256"></progress> : {s.base_stat}</p>)}
+  </div>
 </div>
