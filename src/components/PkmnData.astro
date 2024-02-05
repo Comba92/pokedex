@@ -8,14 +8,18 @@ const artworkUrl = data.sprites.other['official-artwork'].front_default
 const types = await Promise.all(
   data.types.map(async (t) => await fetchJson(t.type.url))
 )
-const weaknesses = await computeWeaknesses(types)
+const weaknesses = computeWeaknesses(types)
 
 const abilities = await Promise.all(
   data.abilities.map(async (a) => await fetchJson(a.ability.url))
 )
 
 const species = await fetchJson(data.species.url)
-const classification = species.genera.filter(g => g.language.name === 'en')[0].genus.split(' ')[0]
+const classification = species.genera
+  .filter(g => g.language.name === 'en')[0]
+  // this just trims out the unicode 'pokemon' word after the genus
+  .genus.split(' ')[0]
+
 const genderRateFemale = species.gender_rate * 100 / 8
 const genderRateMale = 100 - genderRateFemale
 
@@ -52,8 +56,15 @@ const pkmn = {
   types: types.map(type => capitalize(type.name)).join(', '),
   weaknesses,
   evolutions,
-  abilities,
+  abilities: abilities.map(a => { 
+    return {
+      name: capitalize(a.name), 
+      effect: a.effect_entries.filter(e => e.language.name === 'en')[0].short_effect,
+      description: a.effect_entries.filter(e => e.language.name === 'en')[0].effect
+    }
+  }),
 }
+
 ---
 <div id="pkmnData">
   <div>
@@ -78,13 +89,20 @@ const pkmn = {
     <h1>Base stats</h1>
       {pkmn.stats.map(s => <p>{(s.name)} <progress value={s.value} max="256"></progress> : {s.value}</p>)}
   </div>
-  
+
+  <div>
+    <h1>Weaknesses</h1>
+    {pkmn.weaknesses.map(w => <p>{w.type}: {w.value}x</p>)}
+  </div>
+
   <div>
     <h1>Evolutions</h1>
   </div>
 
-
   <div>
     <h1>Abilities</h1>
+    {
+      pkmn.abilities.map(a => <p><b>{a.name}</b>: {a.effect}</p>)
+    }
   </div>
 </div>

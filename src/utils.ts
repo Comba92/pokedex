@@ -27,8 +27,12 @@ export function computeWeaknesses(types: any) {
   }
 
   return Object.entries(weaknesses)
-    .map(([key, val]) => { return {type: key, value: val}})
+    .map(([key, val]) => { return {type: capitalize(key), value: val}})
     .filter(w => w.value !== 1)
+}
+
+export function computeEvolutions(evolutions: any) {
+  
 }
 
 export const iconBaseUrl = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/'
