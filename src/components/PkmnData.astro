@@ -1,68 +1,9 @@
 ---
-import { artworkBaseUrl, capitalize, computeEvolutions, computeWeaknesses, fetchJson, getIdFromUrl, iconBaseUrl } from "../utils"
+import extractPkmnData from "../fetching"
+import { getIdFromUrl, iconBaseUrl } from "../utils"
 
 const { data } = Astro.props
-
-const artworkUrl = data.sprites.other['official-artwork'].front_default
-
-const types = await Promise.all(
-  data.types.map(async (t) => await fetchJson(t.type.url))
-)
-
-const abilities = await Promise.all(
-  data.abilities.map(async (a) => await fetchJson(a.ability.url))
-)
-
-const species = await fetchJson(data.species.url)
-const classification = species.genera
-  .filter(g => g.language.name === 'en')[0]
-  // this just trims out the unicode 'pokemon' word after the genus
-  .genus.split(' ')[0]
-
-const genderRateFemale = species.gender_rate * 100 / 8
-const genderRateMale = 100 - genderRateFemale
-
-const evolutions = await fetchJson(species.evolution_chain.url)
-
-const pkmn = {
-  name: capitalize(data.name),
-  id: data.id,
-  artworkUrl,
-  sprites: data.sprites.versions,
-  classification, 
-  height: data.height,
-  weight: data.weight,
-  catchRate: species.capture_rate,
-  genderRateMale,
-  genderRateFemale,
-  expGrowthRate: species.growth_rate.name,
-  baseExp: data.base_experience,
-  baseHappiness: species.base_happiness,
-  stats: data.stats.map(s => {
-    return {name: capitalize(s.stat.name), value: s.base_stat}
-  }),
-  names: species.names.map(n => {
-    return {name: capitalize(n.name), language: n.language.name}
-  }),
-  genera: species.genera.map(g => {
-    return {name: capitalize(g.genus), language: g.language.name}
-  }),
-  flavorTexts: species.flavor_text_entries
-    .filter(t => t.language.name === 'en')
-    .map(t => {
-      return {text: t.flavor_text, version: t.version.name}
-    }),
-  types: types.map(type => capitalize(type.name)).join(', '),
-  weaknesses: computeWeaknesses(types),
-  evolutions: computeEvolutions(evolutions),
-  abilities: abilities.map(a => { 
-    return {
-      name: capitalize(a.name), 
-      effect: a.effect_entries.filter(e => e.language.name === 'en')[0].short_effect,
-      description: a.effect_entries.filter(e => e.language.name === 'en')[0].effect
-    }
-  }),
-}
+const pkmn = await extractPkmnData(data)
 
 ---
 <div id="pkmnData">
@@ -102,7 +43,7 @@ const pkmn = {
           const imgUrl = iconBaseUrl + getIdFromUrl(chain.species.url) + '.png'
 
           if(chain.next.length === 0) return <span>{chain.species.name}<img src={imgUrl}/></span>
-          
+
           return <span>
               {chain.species.name} <img src={imgUrl}/> ->
               {chain.next.map(n => recursion(n))}
