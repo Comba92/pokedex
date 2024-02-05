@@ -80,8 +80,8 @@ export default async function extractPkmnData(data) {
     abilities: abilities.map(a => { 
       return {
         name: capitalize(a.name), 
-        effect: a.effect_entries.filter(e => e.language.name === 'en')[0].short_effect,
-        description: a.effect_entries.filter(e => e.language.name === 'en')[0].effect
+        effect: a?.effect_entries?.filter(e => e.language.name === 'en')[0]?.short_effect,
+        description: a?.effect_entries?.filter(e => e.language.name === 'en')[0]?.effect
       }
     }),
   }

@@ -9,7 +9,7 @@ const pkmn = await extractPkmnData(data)
 <div id="pkmnData">
   <div>
     <h1>{pkmn.name}</h1>
-    <img src={pkmn.artworkUrl}/>
+    <img src={pkmn.artworkUrl} width="250px"/>
     <h3>National ID: #{String(pkmn.id).padStart(3, '0')}</h3>
     <div>Type: <b>{pkmn.types}</b></div>
     <p>{pkmn.classification} Pokemon</p>
@@ -38,6 +38,7 @@ const pkmn = await extractPkmnData(data)
   <div>
     <h1>Evolutions</h1>
     {
+      // this shit prints the evolution tree, will make it cooler later
       () => {
         function recursion(chain) {
           const imgUrl = iconBaseUrl + getIdFromUrl(chain.species.url) + '.png'
@@ -45,8 +46,7 @@ const pkmn = await extractPkmnData(data)
           if(chain.next.length === 0) return <span>{chain.species.name}<img src={imgUrl}/></span>
 
           return <span>
-              {chain.species.name} <img src={imgUrl}/> ->
-              {chain.next.map(n => recursion(n))}
+              {chain.species.name} <img src={imgUrl}/> -> {chain.next.map(n => recursion(n))}
             </span>
         }
 
@@ -60,5 +60,14 @@ const pkmn = await extractPkmnData(data)
     {
       pkmn.abilities.map(a => <p><b>{a.name}</b>: {a.effect}</p>)
     }
+  </div>
+
+  <div>
+    <h1>Sprites</h1>
+    <!-- refactor this shit out -->
+    <img src={pkmn.sprites['generation-v']['black-white'].front_default}/>
+    <img src={pkmn.sprites['generation-v']['black-white'].back_default}/>
+    <img src={pkmn.sprites['generation-v']['black-white'].front_female}/>
+    <img src={pkmn.sprites['generation-v']['black-white'].back_female}/>
   </div>
 </div>
