@@ -8,6 +8,10 @@ export function capitalize(str: string): string {
   else return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
+export function getIdFromUrl(url: string): number {
+  return Number(url.slice(0, -1).split('/').slice(-1))
+}
+
 export function computeWeaknesses(types: any) {
   let weaknesses = {}
   
@@ -32,7 +36,16 @@ export function computeWeaknesses(types: any) {
 }
 
 export function computeEvolutions(evolutions: any) {
-  
+  function recursion(chain) {
+    if (!chain) return null
+
+    let echain = {species: chain.species, details: chain.evolution_details, next: null}
+    echain.next = chain.evolves_to.map(c => recursion(c))
+
+    return echain
+  }
+
+  return recursion(evolutions.chain)
 }
 
 export const iconBaseUrl = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/'

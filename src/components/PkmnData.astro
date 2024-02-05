@@ -1,5 +1,5 @@
 ---
-import { capitalize, computeWeaknesses, fetchJson } from "../utils"
+import { artworkBaseUrl, capitalize, computeEvolutions, computeWeaknesses, fetchJson, getIdFromUrl, iconBaseUrl } from "../utils"
 
 const { data } = Astro.props
 
@@ -8,7 +8,6 @@ const artworkUrl = data.sprites.other['official-artwork'].front_default
 const types = await Promise.all(
   data.types.map(async (t) => await fetchJson(t.type.url))
 )
-const weaknesses = computeWeaknesses(types)
 
 const abilities = await Promise.all(
   data.abilities.map(async (a) => await fetchJson(a.ability.url))
@@ -54,8 +53,8 @@ const pkmn = {
       return {text: t.flavor_text, version: t.version.name}
     }),
   types: types.map(type => capitalize(type.name)).join(', '),
-  weaknesses,
-  evolutions,
+  weaknesses: computeWeaknesses(types),
+  evolutions: computeEvolutions(evolutions),
   abilities: abilities.map(a => { 
     return {
       name: capitalize(a.name), 
@@ -97,6 +96,22 @@ const pkmn = {
 
   <div>
     <h1>Evolutions</h1>
+    {
+      () => {
+        function recursion(chain) {
+          const imgUrl = iconBaseUrl + getIdFromUrl(chain.species.url) + '.png'
+
+          if(chain.next.length === 0) return <span>{chain.species.name}<img src={imgUrl}/></span>
+          
+          return <span>
+              {chain.species.name} <img src={imgUrl}/> ->
+              {chain.next.map(n => recursion(n))}
+            </span>
+        }
+
+        return <p>{recursion(pkmn.evolutions)}</p>
+      }
+    }
   </div>
 
   <div>
