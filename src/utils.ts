@@ -3,9 +3,32 @@ export async function fetchJson(url: string) {
   return await req.json()
 }
 
-export function capitalize(str: string) {
+export function capitalize(str: string): string {
   if (str.includes('-')) return str.split('-').map(s => capitalize(s)).join(' ')
   else return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export function computeWeaknesses(types: any) {
+  let weaknesses = {}
+  
+  function computeWeaknessClass(types: any, amount: number) {
+    for (const t of types) {
+      if (weaknesses[t.name]) weaknesses[t.name] *= amount
+      else weaknesses[t.name] = amount
+    }
+  }
+  
+  for (const t of types) {
+    const tData = t.damage_relations
+    
+    computeWeaknessClass(tData.no_damage_from, 0)
+    computeWeaknessClass(tData.half_damage_from, 1/2)
+    computeWeaknessClass(tData.double_damage_from, 2)
+  }
+
+  return Object.entries(weaknesses)
+    .map(([key, val]) => { return {type: key, value: val}})
+    .filter(w => w.value !== 1)
 }
 
 export const iconBaseUrl = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/'
