@@ -1,73 +1,22 @@
 ---
-import extractPkmnData from "../fetching"
-import { getIdFromUrl, iconBaseUrl } from "../utils"
+import BasicData from "./PkmnData/BasicData.astro"
+import Evolutions from "./PkmnData/Evolutions.astro"
+import StatsForNerds from "./PkmnData/StatsForNerds.astro"
+import BaseStats from "./PkmnData/BaseStats.astro"
+import Weaknesses from "./PkmnData/Weaknesses.astro"
+import Abilities from "./PkmnData/Abilities.astro"
+import Sprites from "./PkmnData/Sprites.astro"
 
+import extractPkmnData from "../fetching"
 const { data } = Astro.props
 const pkmn = await extractPkmnData(data)
-
 ---
-<div id="pkmnData">
-  <div>
-    <h1>{pkmn.name}</h1>
-    <img src={pkmn.artworkUrl} width="250px"/>
-    <h3>National ID: #{String(pkmn.id).padStart(3, '0')}</h3>
-    <div>Type: <b>{pkmn.types}</b></div>
-    <p>{pkmn.classification} Pokemon</p>
-    <p>Height: {pkmn.height} m, Weight: {pkmn.weight} kg</p>
-  </div>
-  
-  <div>
-    <h1>Stats for nerds</h1>
-    <p>Geneder Ratio: {pkmn.genderRateMale}% male, {pkmn.genderRateFemale}% female</p>
-    <p>Catch rate: {pkmn.catchRate}</p>
-    <p>Base experience: {pkmn.baseExp}</p>
-    <p>Base happiness: {pkmn.baseHappiness}</p>
-    <p>Growth rate: {pkmn.expGrowthRate}</p>
-  </div>
-  
-  <div>
-    <h1>Base stats</h1>
-      {pkmn.stats.map(s => <p>{(s.name)} <progress value={s.value} max="256"></progress> : {s.value}</p>)}
-  </div>
-
-  <div>
-    <h1>Weaknesses</h1>
-    {pkmn.weaknesses.map(w => <p>{w.type}: {w.value}x</p>)}
-  </div>
-
-  <div>
-    <h1>Evolutions</h1>
-    {
-      // this shit prints the evolution tree, will make it cooler later
-      () => {
-        function recursion(chain) {
-          const imgUrl = iconBaseUrl + getIdFromUrl(chain.species.url) + '.png'
-
-          if(chain.next.length === 0) return <span>{chain.species.name}<img src={imgUrl}/></span>
-
-          return <span>
-              {chain.species.name} <img src={imgUrl}/> -> {chain.next.map(n => recursion(n))}
-            </span>
-        }
-
-        return <p>{recursion(pkmn.evolutions)}</p>
-      }
-    }
-  </div>
-
-  <div>
-    <h1>Abilities</h1>
-    {
-      pkmn.abilities.map(a => <p><b>{a.name}</b>: {a.effect}</p>)
-    }
-  </div>
-
-  <div>
-    <h1>Sprites</h1>
-    <!-- refactor this shit out -->
-    <img src={pkmn.sprites['generation-v']['black-white'].front_default}/>
-    <img src={pkmn.sprites['generation-v']['black-white'].back_default}/>
-    <img src={pkmn.sprites['generation-v']['black-white'].front_female}/>
-    <img src={pkmn.sprites['generation-v']['black-white'].back_female}/>
-  </div>
+<div id="pkmnData" class="col-8">
+  <BasicData pkmn={pkmn}/>
+  <StatsForNerds pkmn={pkmn} />
+  <BaseStats pkmn={pkmn} />
+  <Weaknesses pkmn={pkmn} />
+  <Abilities pkmn={pkmn} />
+  <Evolutions pkmn={pkmn} />
+  <Sprites pkmn={pkmn} />
 </div>

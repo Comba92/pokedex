@@ -1,0 +1,7 @@
+---
+const { pkmn } = Astro.props
+---
+<div>
+  <h1>Base stats</h1>
+    {pkmn.stats.map(s => <p>{(s.name)} <progress value={s.value} max="256"></progress> : {s.value}</p>)}
+</div>

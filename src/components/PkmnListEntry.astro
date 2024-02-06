@@ -4,7 +4,7 @@ const { id, pkmn } = Astro.props
 ---
 <div class="pkmnEntry" id={pkmn.name}>
   <a href={`/${pkmn.name}`}>
-    <button>
+    <button class="btn btn-light btn-outline-dark">
       {id+1} { capitalize(pkmn.name) }
       <img src={ iconBaseUrl + String(id + 1) + '.png' } />
     </button>

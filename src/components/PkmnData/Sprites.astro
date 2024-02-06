@@ -1,0 +1,11 @@
+---
+const { pkmn } = Astro.props
+---
+<div>
+  <h1>Sprites</h1>
+  <!-- refactor this shit out -->
+  <img src={pkmn.sprites['generation-v']['black-white'].front_default}/>
+  <img src={pkmn.sprites['generation-v']['black-white'].back_default}/>
+  <img src={pkmn.sprites['generation-v']['black-white'].front_female}/>
+  <img src={pkmn.sprites['generation-v']['black-white'].back_female}/>
+</div>

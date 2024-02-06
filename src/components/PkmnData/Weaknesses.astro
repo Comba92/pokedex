@@ -1,0 +1,7 @@
+---
+const { pkmn } = Astro.props
+---
+<div>
+  <h1>Weaknesses</h1>
+  {pkmn.weaknesses.map(w => <p>{w.type}: {w.value}x</p>)}
+</div>

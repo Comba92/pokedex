@@ -1,0 +1,23 @@
+---
+import { iconBaseUrl, getIdFromUrl } from "../../utils"
+const { pkmn } = Astro.props
+---
+<div>
+  <h1>Evolutions</h1>
+  {
+    // this shit prints the evolution tree, will make it cooler later
+    () => {
+      function recursion(chain) {
+        const imgUrl = iconBaseUrl + getIdFromUrl(chain.species.url) + '.png'
+
+        if(chain.next.length === 0) return <span>{chain.species.name}<img src={imgUrl}/></span>
+
+        return <span>
+            {chain.species.name} <img src={imgUrl}/> -> {chain.next.map(n => recursion(n))}
+          </span>
+      }
+
+      return <p>{recursion(pkmn.evolutions)}</p>
+    }
+  }
+</div>

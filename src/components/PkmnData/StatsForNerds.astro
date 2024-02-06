@@ -1,0 +1,11 @@
+---
+const { pkmn } = Astro.props
+---
+<div>
+  <h1>Stats for nerds</h1>
+  <p>Geneder Ratio: {pkmn.genderRateMale}% male, {pkmn.genderRateFemale}% female</p>
+  <p>Catch rate: {pkmn.catchRate}</p>
+  <p>Base experience: {pkmn.baseExp}</p>
+  <p>Base happiness: {pkmn.baseHappiness}</p>
+  <p>Growth rate: {pkmn.expGrowthRate}</p>
+</div>

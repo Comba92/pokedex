@@ -1,0 +1,11 @@
+---
+const { pkmn } = Astro.props
+---
+<div>
+  <h1>{pkmn.name}</h1>
+  <img src={pkmn.artworkUrl} width="250px"/>
+  <h3>National ID: #{String(pkmn.id).padStart(3, '0')}</h3>
+  <div>Type: <b>{pkmn.types}</b></div>
+  <p>{pkmn.classification} Pokemon</p>
+  <p>Height: {pkmn.height} m, Weight: {pkmn.weight} kg</p>
+</div>

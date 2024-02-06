@@ -1,0 +1,9 @@
+---
+const { pkmn } = Astro.props
+---
+<div>
+  <h1>Abilities</h1>
+  {
+    pkmn.abilities.map(a => <p><b>{a.name}</b>: {a.effect}</p>)
+  }
+</div>

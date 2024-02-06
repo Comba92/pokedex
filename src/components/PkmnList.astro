@@ -4,10 +4,12 @@ import PkmnListEntry from './PkmnListEntry.astro'
 
 const list = (await fetchJson('https://pokeapi.co/api/v2/pokemon?limit=151')).results
 ---
-<div id="pkmnList">
-  {
-    list.map((pkmn, id) => 
-      <PkmnListEntry id={id} pkmn={pkmn} />
-    )
-  }
+<div id="pkmnList" class="col-4 container">
+  <div class="btn-group-vertical" role="group">
+    {
+      list.map((pkmn, id) => 
+        <PkmnListEntry id={id} pkmn={pkmn} />
+      )
+    }
+  </div>
 </div>
